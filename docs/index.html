@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Sign Message</title>
 
-    <!-- ✅ Ensure correct loading of required libraries -->
+    <!-- ✅ Load bs58 and Solana web3.js BEFORE running any scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bs58/5.0.0/bs58.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
 </head>
@@ -46,9 +46,9 @@
             }
 
             try {
-                // ✅ Ensure bs58 is actually loaded
+                // ✅ Ensure bs58 is loaded
                 if (typeof bs58 === "undefined") {
-                    throw new Error("❌ bs58 is not loaded!");
+                    throw new Error("❌ bs58 is STILL NOT LOADED!");
                 }
 
                 // ✅ Prepare the message
