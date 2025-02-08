@@ -22,29 +22,6 @@
     <script>
         let wallet;
 
-        function ensureBs58Loaded() {
-            return new Promise((resolve, reject) => {
-                if (typeof bs58 !== "undefined") {
-                    console.log("✅ bs58 is already loaded!");
-                    resolve();
-                } else {
-                    console.log("⏳ Loading bs58...");
-                    const script = document.createElement("script");
-                    script.src = "https://cdnjs.cloudflare.com/ajax/libs/bs58/5.0.0/bs58.min.js";
-                    script.onload = () => {
-                        if (typeof bs58 !== "undefined") {
-                            console.log("✅ bs58 loaded successfully!");
-                            resolve();
-                        } else {
-                            reject("❌ Failed to load bs58!");
-                        }
-                    };
-                    script.onerror = () => reject("❌ Error loading bs58!");
-                    document.head.appendChild(script);
-                }
-            });
-        }
-
         async function connectWallet() {
             if (!window.solflare) {
                 alert("Solflare Wallet not detected! Please install it.");
@@ -69,8 +46,10 @@
             }
 
             try {
-                // ✅ Ensure bs58 is loaded before proceeding
-                await ensureBs58Loaded();
+                // ✅ Ensure bs58 is actually loaded
+                if (typeof bs58 === "undefined") {
+                    throw new Error("❌ bs58 is still not loaded!");
+                }
 
                 // ✅ Prepare the message
                 const messageString = "Sign-in to Rugcheck.xyz " + wallet.publicKey.toBase58() + " " + Math.floor(Date.now() / 1000);
