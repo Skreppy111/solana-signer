@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Sign Message</title>
+
+    <!-- ✅ Load required libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bs58/5.0.0/bs58.min.js"></script>
+    <script src="https://unpkg.com/bs58@5.0.0/dist/index.umd.js"></script> 
+
 </head>
 <body>
 
@@ -43,12 +47,12 @@
             }
 
             try {
-                // ✅ Check if bs58 is loaded
+                // ✅ Ensure bs58 is loaded properly
                 if (typeof bs58 === "undefined") {
-                    throw new Error("❌ bs58 is not loaded! Fix the script order.");
+                    throw new Error("❌ bs58 is not loaded correctly!");
                 }
 
-                // ✅ Create the message
+                // ✅ Prepare the message
                 const messageString = "Sign-in to Rugcheck.xyz" + wallet.publicKey.toBase58() + Math.floor(Date.now() / 1000);
                 console.log("📜 Message to sign:", messageString);
 
@@ -60,11 +64,12 @@
                     throw new Error("❌ Solflare did not return a valid signature.");
                 }
 
-                // ✅ Convert to Base58
-                const base58Signature = bs58.encode(new Uint8Array(signedMessage.signature));
+                // ✅ Convert Uint8Array to Base58 correctly
+                const signatureArray = new Uint8Array(signedMessage.signature);
+                const base58Signature = bs58.encode(signatureArray);
                 console.log("✅ Final Signature (Base58):", base58Signature);
 
-                // ✅ Display the signature
+                // ✅ Show signature on the page
                 document.getElementById("signature").innerText = base58Signature;
 
             } catch (err) {
@@ -73,5 +78,6 @@
             }
         }
     </script>
+
 </body>
 </html>
