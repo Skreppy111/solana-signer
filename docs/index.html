@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Sign Message</title>
 
-    <!-- ✅ Correctly Import bs58 -->
+    <!-- ✅ Ensure correct loading of required libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bs58/5.0.0/bs58.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
 </head>
@@ -46,25 +46,24 @@
             }
 
             try {
-                // ✅ Make sure bs58 is loaded
+                // ✅ Ensure bs58 is loaded
                 if (typeof bs58 === "undefined") {
                     throw new Error("❌ bs58 is not loaded correctly!");
                 }
 
-                // ✅ Prepare the message
+                // ✅ Use plain string for signing
                 const messageString = "Sign-in to Rugcheck.xyz " + wallet.publicKey.toBase58() + " " + Math.floor(Date.now() / 1000);
                 console.log("📜 Message to sign:", messageString);
 
-                // ✅ Sign the message
-                const encodedMessage = new TextEncoder().encode(messageString);
-                const signedMessage = await wallet.signMessage(encodedMessage);
+                // ✅ Sign the message (NO NEED FOR TextEncoder)
+                const signedMessage = await wallet.signMessage(new TextEncoder().encode(messageString));
                 console.log("✅ Signed Message Response:", signedMessage);
 
                 if (!signedMessage || !signedMessage.signature) {
                     throw new Error("❌ Solflare did not return a valid signature.");
                 }
 
-                // ✅ Convert Uint8Array to Base58
+                // ✅ Convert Uint8Array to Base58 properly
                 const base58Signature = bs58.encode(signedMessage.signature);
                 console.log("✅ Final Signature (Base58):", base58Signature);
 
