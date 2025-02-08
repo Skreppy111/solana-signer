@@ -3,35 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solana Signer</title>
+    <title>Solana Sign Message</title>
 
-    <!-- ✅ Load dependencies -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
+    <!-- ✅ Correctly Import bs58 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bs58/4.0.1/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
 </head>
+
 <body>
 
     <h2>Solana Message Signer</h2>
     <button onclick="connectWallet()">Connect Wallet</button>
     <button onclick="signMessage()">Sign Message</button>
+
     <p><strong>Public Key:</strong> <span id="publicKey">Not connected</span></p>
     <p><strong>Signature:</strong> <span id="signature">None</span></p>
 
     <script>
         let wallet;
-
-        // ✅ Manually import bs58 if not already loaded
-        async function loadBs58() {
-            if (typeof bs58 === "undefined") {
-                console.log("⏳ Loading bs58 manually...");
-                await import("https://cdn.jsdelivr.net/npm/bs58").then((module) => {
-                    window.bs58 = module;
-                    console.log("✅ bs58 is now loaded!");
-                }).catch(err => {
-                    console.error("❌ Failed to load bs58!", err);
-                });
-            }
-        }
 
         async function connectWallet() {
             if (!window.solflare) {
@@ -57,9 +46,6 @@
             }
 
             try {
-                // ✅ First, ensure bs58 is loaded
-                await loadBs58();
-
                 // ✅ Prepare the message
                 const messageString = "Sign-in to Rugcheck.xyz" + wallet.publicKey.toBase58() + Math.floor(Date.now() / 1000);
                 console.log("📜 Message to sign:", messageString);
@@ -72,12 +58,11 @@
                     throw new Error("❌ Solflare did not return a valid signature.");
                 }
 
-                // ✅ Convert Uint8Array to Base58 correctly
-                const signatureArray = new Uint8Array(signedMessage.signature);
-                const base58Signature = bs58.encode(signatureArray);
+                // ✅ Convert Uint8Array to Base58
+                const base58Signature = bs58.encode(new Uint8Array(signedMessage.signature));
                 console.log("✅ Final Signature (Base58):", base58Signature);
 
-                // ✅ Show signature on the page
+                // ✅ Display signature on page
                 document.getElementById("signature").innerText = base58Signature;
 
             } catch (err) {
@@ -86,5 +71,6 @@
             }
         }
     </script>
+
 </body>
 </html>
