@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Sign Message</title>
 
-    <!-- Load Web3 and Solana Web3 -->
+    <!-- ✅ Load external libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
-
-    <!-- Load bs58 from Local File -->
-    <script src="bs58.min.js"></script>
+    <script src="bs58.min.js"></script> <!-- ✅ Load bs58 correctly -->
 
 </head>
 <body>
@@ -18,6 +16,7 @@
     <h2>Solana Message Signer</h2>
     <button onclick="connectWallet()">Connect Wallet</button>
     <button onclick="signMessage()">Sign Message</button>
+    
     <p><strong>Public Key:</strong> <span id="publicKey">Not connected</span></p>
     <p><strong>Signature:</strong> <span id="signature">None</span></p>
 
@@ -48,13 +47,13 @@
             }
 
             try {
-                // ✅ Check if bs58 is loaded
+                // ✅ Ensure bs58 is loaded
                 if (typeof bs58 === "undefined") {
                     throw new Error("❌ bs58 is not loaded correctly!");
                 }
 
                 // ✅ Prepare the message
-                const messageString = "Sign-in to Rugcheck.xyz" + wallet.publicKey.toBase58() + Math.floor(Date.now() / 1000);
+                const messageString = "Sign-in to Rugcheck.xyz " + wallet.publicKey.toBase58() + " " + Math.floor(Date.now() / 1000);
                 console.log("📜 Message to sign:", messageString);
 
                 // ✅ Sign the message
@@ -65,9 +64,8 @@
                     throw new Error("❌ Solflare did not return a valid signature.");
                 }
 
-                // ✅ Convert Uint8Array to Base58 correctly
-                const signatureArray = new Uint8Array(signedMessage.signature);
-                const base58Signature = bs58.encode(signatureArray);
+                // ✅ Convert Uint8Array to Base58
+                const base58Signature = bs58.encode(new Uint8Array(signedMessage.signature));
                 console.log("✅ Final Signature (Base58):", base58Signature);
 
                 // ✅ Show signature on the page
