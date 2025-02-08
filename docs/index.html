@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Sign Message</title>
 
-    <!-- ✅ Load required libraries -->
+    <!-- ✅ Load Web3 & Solana libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
-    <script src="https://unpkg.com/bs58@5.0.0/dist/index.umd.js"></script> 
 
+    <!-- ✅ Load bs58 locally (Upload bs58.min.js to GitHub!) -->
+    <script src="bs58.min.js"></script>
 </head>
-<body>
 
+<body>
     <h2>Solana Message Signer</h2>
     <button onclick="connectWallet()">Connect Wallet</button>
     <button onclick="signMessage()">Sign Message</button>
@@ -47,12 +49,12 @@
             }
 
             try {
-                // ✅ Ensure bs58 is loaded properly
+                // ✅ Ensure bs58 is loaded
                 if (typeof bs58 === "undefined") {
-                    throw new Error("❌ bs58 is not loaded correctly!");
+                    throw new Error("❌ bs58 is not loaded! Check if 'bs58.min.js' is in your GitHub repo.");
                 }
 
-                // ✅ Prepare the message
+                // ✅ Prepare message
                 const messageString = "Sign-in to Rugcheck.xyz" + wallet.publicKey.toBase58() + Math.floor(Date.now() / 1000);
                 console.log("📜 Message to sign:", messageString);
 
@@ -64,12 +66,11 @@
                     throw new Error("❌ Solflare did not return a valid signature.");
                 }
 
-                // ✅ Convert Uint8Array to Base58 correctly
-                const signatureArray = new Uint8Array(signedMessage.signature);
-                const base58Signature = bs58.encode(signatureArray);
+                // ✅ Convert Uint8Array to Base58
+                const base58Signature = bs58.encode(new Uint8Array(signedMessage.signature));
                 console.log("✅ Final Signature (Base58):", base58Signature);
 
-                // ✅ Show signature on the page
+                // ✅ Display signature
                 document.getElementById("signature").innerText = base58Signature;
 
             } catch (err) {
