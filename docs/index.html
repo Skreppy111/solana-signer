@@ -2,14 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Sign Message</title>
-
-    <!-- ✅ Load bs58 and Solana web3.js BEFORE running any scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bs58/5.0.0/bs58.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bs58/5.0.0/bs58.min.js"></script>
 </head>
-
 <body>
 
     <h2>Solana Message Signer</h2>
@@ -46,13 +43,13 @@
             }
 
             try {
-                // ✅ Ensure bs58 is loaded
+                // ✅ Check if bs58 is loaded
                 if (typeof bs58 === "undefined") {
-                    throw new Error("❌ bs58 is STILL NOT LOADED!");
+                    throw new Error("❌ bs58 is not loaded! Fix the script order.");
                 }
 
-                // ✅ Prepare the message
-                const messageString = "Sign-in to Rugcheck.xyz " + wallet.publicKey.toBase58() + " " + Math.floor(Date.now() / 1000);
+                // ✅ Create the message
+                const messageString = "Sign-in to Rugcheck.xyz" + wallet.publicKey.toBase58() + Math.floor(Date.now() / 1000);
                 console.log("📜 Message to sign:", messageString);
 
                 // ✅ Sign the message
@@ -63,11 +60,11 @@
                     throw new Error("❌ Solflare did not return a valid signature.");
                 }
 
-                // ✅ Convert Uint8Array to Base58 properly
-                const base58Signature = bs58.encode(signedMessage.signature);
+                // ✅ Convert to Base58
+                const base58Signature = bs58.encode(new Uint8Array(signedMessage.signature));
                 console.log("✅ Final Signature (Base58):", base58Signature);
 
-                // ✅ Display signature on page
+                // ✅ Display the signature
                 document.getElementById("signature").innerText = base58Signature;
 
             } catch (err) {
@@ -76,6 +73,5 @@
             }
         }
     </script>
-
 </body>
 </html>
