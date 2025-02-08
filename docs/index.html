@@ -1,87 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana Sign Message</title>
 
-    <!-- ✅ Load external scripts FIRST -->
+    <!-- ✅ Load scripts in this order -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bs58"></script> <!-- ✅ MUST be before signMessage() -->
+
+    <!-- ✅ Fix: Load bs58 with 'defer' to ensure it loads before signMessage() -->
+    <script defer src="https://cdn.jsdelivr.net/npm/bs58"></script>
 </head>
-
-<body>
-
-    <h2>Solana Message Signer</h2>
-
-    <button onclick="connectWallet()">Connect Wallet</button>
-    <button onclick="signMessage()">Sign Message</button>
-
-    <p><strong>Public Key:</strong> <span id="publicKey">Not connected</span></p>
-    <p><strong>Signature:</strong> <span id="signature">None</span></p>
-
-    <!-- ✅ Your JavaScript comes AFTER all scripts are loaded -->
-    <script>
-        let wallet;
-
-        async function connectWallet() {
-            if (!window.solflare) {
-                alert("Solflare Wallet not detected! Please install it.");
-                return;
-            }
-
-            try {
-                await window.solflare.connect();
-                wallet = window.solflare;
-                console.log("✅ Wallet connected!", wallet.publicKey.toBase58());
-                document.getElementById("publicKey").innerText = wallet.publicKey.toBase58();
-            } catch (err) {
-                console.error("❌ Wallet connection failed:", err);
-                alert("Wallet connection failed: " + err.message);
-            }
-        }
-
-        async function signMessage() {
-            if (!wallet) {
-                alert("Please connect your wallet first.");
-                return;
-            }
-
-            try {
-                // ✅ Prepare the message
-                const messageString = "Sign-in to Rugcheck.xyz" + wallet.publicKey.toBase58() + Math.floor(Date.now() / 1000);
-                console.log("📜 Message to sign:", messageString);
-
-                // ✅ Sign the message
-                const signedMessage = await wallet.signMessage(new TextEncoder().encode(messageString));
-                console.log("✅ Signed Message Response:", signedMessage);
-
-                if (!signedMessage || !signedMessage.signature) {
-                    throw new Error("❌ Solflare did not return a valid signature.");
-                }
-
-                // 🔥 FIX: Ensure bs58 is loaded before using it
-                if (typeof bs58 === "undefined") {
-                    console.error("❌ Error: bs58 is not defined!");
-                    alert("Signing failed: bs58 library is missing!");
-                    return;
-                }
-
-                // ✅ Convert Uint8Array to Base58 correctly
-                const signatureArray = new Uint8Array(signedMessage.signature);
-                const base58Signature = bs58.encode(signatureArray);
-                console.log("✅ Final Signature (Base58):", base58Signature);
-
-                // ✅ Show signature on the page
-                document.getElementById("signature").innerText = base58Signature;
-
-            } catch (err) {
-                console.error("❌ Signing failed", err);
-                alert("Signing failed: " + err.message);
-            }
-        }
-    </script>
-
-</body>
-</html>
